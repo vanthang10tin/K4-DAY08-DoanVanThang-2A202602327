@@ -84,13 +84,16 @@ Phân tích chi tiết vòng 1:
 
 ## 5. Kết luận và giới hạn
 
-- **Đánh giá kết quả vòng 1**: So với khởi đầu lạnh, vòng 1 có bước tiến lớn về mặt độ chuẩn xác (Precision 100%, không còn FP), nhưng suy giảm đáng kể về độ phủ đối với xe nhỏ và vừa (AP50 giảm còn 0.443).
-- **Quyết định: TIẾP TỤC làm vòng 2**:
-  Việc dừng lại ở vòng 1 là chưa hợp lý vì mô hình đang trong giai đoạn chuyển đổi thích nghi với bộ nhãn mới, cần thêm dữ liệu đa dạng để khôi phục Recall. Cần gán nhãn lô 12 ảnh tiếp theo trong `to_label/round2/` để giúp mô hình học thêm về các hình thái xe ở cự ly xa.
-- **Đề xuất hai ca còn yếu cho vòng sau**:
-  1. *Xe đi ngược chiều ở làn xa có đèn pha chói lòa*: Cần nhiều ví dụ để AI phân biệt được nguồn sáng đèn pha và hình khối cabin xe.
-  2. *Xe bị che khuất một phần bởi xe tải phía trước*: Giúp mô hình nhận biết xe trong điều kiện chồng lấn ranh giới.
-  - *Chi phí và nguy cơ*: Chi phí rà soát 12 ảnh mới tốn khoảng 35-45 phút. Cần tiếp tục duy trì lọc `MIN_GAP_S` để tránh lãng phí thời gian vào các frame trùng góc nhìn.
+- **Đánh giá kết quả vòng 1**: So với khởi đầu lạnh (cold start AP50 = 0.771), vòng 1 đạt bước tiến vượt bậc về độ chính xác tuyệt đối (Precision@0.25 đạt 1.000, 0 FP), nhưng độ phủ Recall giảm mạnh đối với xe nhỏ và xe vừa, kéo theo AP50 giảm xuống 0.443.
+- **Quyết định: DỪNG LẠI ở vòng 1 (không làm tiếp vòng 2)**:
+  Tôi quyết định **dừng lại ở vòng 1** vì các lý do kỹ thuật và hiệu quả đầu tư công sức:
+  1. *Chi phí thời gian gán nhãn*: Rà soát và chỉnh sửa thêm một lô 12 ảnh tiêu tốn từ 35-45 phút gán nhãn thủ công tỉ mỉ.
+  2. *Nguy cơ dữ liệu trùng lặp*: Video cao tốc ban đêm quay từ camera cố định nên các frame rất dễ bị lặp lại bối cảnh ánh sáng và luồng xe, mang lại ít giá trị thông tin mới.
+  3. *Giới hạn của tập kiểm thử*: Tập test chỉ vỏn vẹn 20 ảnh với 403 box tham chiếu (trong đó 14 box nhỏ dưới 16px bị loại bỏ), và nhãn test cũng do mô hình máy học tự sinh chưa qua chuyên viên thẩm định 100%. Khi tập test quá nhỏ, số đo AP50 rất nhạy cảm với sai lệch cục bộ, việc cố gán thêm 12 ảnh vòng 2 không bảo đảm mô hình sẽ tăng điểm AP50 trên tập test này mà còn có nguy cơ gây quá khớp (overfitting) cục bộ.
+- **Đề xuất hai ca còn yếu hoặc bất định nếu tiếp tục vòng sau**:
+  1. *Xe đi ngược chiều ở làn xa bị đèn pha chói lòa*: Cần thêm ví dụ để AI phân biệt được nguồn sáng đèn pha và hình khối cabin xe.
+  2. *Xe chạy sát mép dải phân cách bị khuất góc*: Cần hướng dẫn mô hình nhận diện tốt hơn khi diện tích thân xe nhìn thấy dưới 30%.
+  - *Cân nhắc chi phí & rủi ro*: Cần tiếp tục siết chặt `MIN_GAP_S` để tránh gán nhãn các ảnh sát giờ nhau.
 - **Giới hạn thực nghiệm**:
   + Tập kiểm thử chỉ có 20 ảnh với 403 box tham chiếu; kích thước tập test nhỏ khiến các chỉ số mAP/AP50 rất nhạy cảm với biến động cục bộ.
   + Luật đánh giá bỏ qua 14 box xe nhỏ dưới 16px và nhãn tham chiếu do mô hình tự sinh chưa qua kiểm duyệt thủ công 100%, dẫn tới khả năng một số dự đoán đúng của mô hình bị tính là sai hoặc ngược lại.
