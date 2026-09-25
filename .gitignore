@@ -7,5 +7,9 @@ runs/
 *.onnx
 day8_data.zip
 day8_round*_out.zip
+round*.zip
 to_label/
+day8_round0_out*/
 .agent/
+python.bat
+
