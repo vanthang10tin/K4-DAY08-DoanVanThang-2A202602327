@@ -1,0 +1,5 @@
+round,frame_id,object,action,rule_or_reason
+1,frame_0099.jpg,xe ở xa chỉ nhìn thấy đèn hậu,added,Xe từ 4 bánh trở lên nhìn thấy đèn hậu và thân xe từ xa theo GUIDELINE_LABEL.md
+1,frame_0099.jpg,vệt phản chiếu ánh sáng trên mặt đường,deleted,Vệt sáng đèn pha trên mặt đường không phải xe nên xóa khung theo quy tắc
+1,frame_0227.jpg,xe đi cùng chiều làn giữa,edited,Kéo chỉnh khung ôm sát thân xe bao gồm cả gương chiếu hậu và đuôi xe
+1,frame_0331.jpg,hai khung AI vẽ chồng lên cùng một xe,deleted,Xóa một khung trùng để đảm bảo mỗi xe chỉ có duy nhất một khung
